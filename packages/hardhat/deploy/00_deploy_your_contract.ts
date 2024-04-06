@@ -1,7 +1,8 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
+//import { Contract } from "ethers";
 
+const ContractName = "FavoriteRecords";
 /**
  * Deploys a contract named "YourContract" using the deployer account and
  * constructor arguments set to the deployer address
@@ -12,7 +13,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
-    When deploying to live networks (e.g `yarn deploy --network sepolia`), the deployer account
+    When deploying to live networks (e.g `yarn deploy --network goerli`), the deployer account
     should have sufficient balance to pay for the gas fees for contract creation.
 
     You can generate a random account with `yarn generate` which will fill DEPLOYER_PRIVATE_KEY
@@ -22,10 +23,32 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("YourContract", {
+  /*
+  EmployeeStorage Contract
+    For the purposes of the test, you must deploy the contract with the following values:
+
+    shares - 1000
+    name - Pat
+    salary - 50000
+    idNumber - 112358132134
+*/
+  const albums = [
+    "Thriller",
+    "Back in Black",
+    "The Bodyguard",
+    "The Dark Side of the Moon",
+    "Their Greatest Hits (1971-1975)",
+    "Hotel California",
+    "Come On Over",
+    "Rumours",
+    "Saturday Night Fever",
+  ];
+
+  await deploy(ContractName, {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer],
+    //args: [1000, "Pat", 50000, 112358132134],
+    args: [albums],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -33,12 +56,12 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
-  console.log("👋 Initial greeting:", await yourContract.greeting());
+  // const basicMath = await hre.ethers.getContract<Contract>(ContractName, deployer);
+  // console.log("👋 Initial result:", await basicMath.adder(1, 1));
 };
 
 export default deployYourContract;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployYourContract.tags = ["YourContract"];
+deployYourContract.tags = [ContractName];
