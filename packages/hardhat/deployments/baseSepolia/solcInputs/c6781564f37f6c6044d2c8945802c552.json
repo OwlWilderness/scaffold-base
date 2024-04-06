@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/FavoriteRecords.sol": {
+      "content": "//SPDX-License-Identifier: MIT\npragma solidity >=0.8.0 <0.9.0;\n\n ///@author tekh.eth\n ///@notice base camp exercise \n ///@notice https://docs.base.org/base-camp/docs/mappings/mappings-exercise\n\n\ncontract FavoriteRecords {\n\n    mapping(address => mapping (string => bool)) public userFavorites;\n    mapping(string => bool) public approvedRecords;\n    string[] public albumIndex;\n    uint public approvedAlbumCount; //+/- this when maintaining approved mapping;\n    error NotApproved(string);\n    constructor(string[] memory _albums){\n        loadApprovedAlbums(_albums);\n    }\n\n    //Reset User Favorites\n    function resetUserFavorites() public {\n        //using the approved list get the total favorites by the user\n        for(uint i = 0; i < albumIndex.length; i++) {\n            if(userFavorites[msg.sender][albumIndex[i]]){\n                userFavorites[msg.sender][albumIndex[i]] = false;\n            }   \n        }\n    }\n\n    //Add Record to User Favorite List\n    function addRecord(string memory _album) public {\n  \n        if(approvedRecords[_album]){\n            userFavorites[msg.sender][_album] = true;\n        } else {\n            revert NotApproved(_album);\n        }\n    }\n\n    //Get Approved Records\n    function getApprovedRecords() public view returns (string[] memory) {\n        string[] memory approvedList = new string[](approvedAlbumCount);\n\n        for(uint i = 0; i < albumIndex.length; i++) {\n            if(approvedRecords[albumIndex[i]]){\n                approvedList[i] = albumIndex[i];\n            }\n        }\n\n        return approvedList;\n    }\n\n    //Get Approved Record \n    function IsRecordApproved(string memory _album) public view returns (bool){\n        return approvedRecords[_album];\n    }\n\n    //Returns User Favorites\n    function getUserFavorites(address _address) public view returns (string[] memory){\n        \n        uint userFavCount;\n\n        //using the approved list get the total favorites by the user\n        for(uint i = 0; i < albumIndex.length; i++) {\n            if(userFavorites[_address][albumIndex[i]]){\n                ++userFavCount;\n            }\n        }\n\n        //init an array with the size of the user favorite count and add favs\n        string[] memory userFavs = new string[](userFavCount);\n        userFavCount = 0;\n        for(uint i = 0; i < albumIndex.length; i++) {\n            if(userFavorites[_address][albumIndex[i]]){\n                userFavs[userFavCount] = albumIndex[i];\n                ++userFavCount;\n            }\n        }\n        return userFavs;\n    }\n\n    //Load Approved Albums\n    function loadApprovedAlbums(string[] memory _albums) private {\n        for(uint i = 0; i< _albums.length; ++i){\n            approvedRecords[_albums[i]] = true;\n            albumIndex.push(_albums[i]);\n            ++approvedAlbumCount;\n        }\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

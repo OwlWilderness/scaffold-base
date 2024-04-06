@@ -30,7 +30,7 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "baseSepolia",
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer
@@ -120,8 +120,23 @@ const config: HardhatUserConfig = {
     },
   },
   // configuration for harhdat-verify plugin
+  // etherscan: {
+  //  apiKey: `${etherscanApiKey}`,
+  //},
   etherscan: {
-    apiKey: `${etherscanApiKey}`,
+    apiKey: {
+      baseSepolia: process.env.BLOCKSCOUT_KEY as string,
+    },
+    customChains: [
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://base-sepolia.blockscout.com/api",
+          browserURL: "https://base-sepolia.blockscout.com",
+        },
+      },
+    ],
   },
   // configuration for etherscan-verify from hardhat-deploy plugin
   verify: {

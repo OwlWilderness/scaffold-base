@@ -64,11 +64,6 @@ describe("FavoriteRecords", function () {
       // expect(await contract.getRecord("The Bodygaurd")).be.equal(true);
     });
 
-    it("Get Record 'Back in Black' to be a favorite.", async function () {
-      //expect(await contract.addRecord("The Bodyguard")).to.be.ok;
-      expect(await contract.getRecord(addy, "Back in Black")).be.equal(true);
-    });
-
     it("Adds approved album 'Their Greatest Hits (1971-1975)'.", async function () {
       expect(await contract.addRecord("Their Greatest Hits (1971-1975)")).to.be.ok;
       // expect(await contract.getRecord("The Bodygaurd")).be.equal(true);
@@ -88,6 +83,14 @@ describe("FavoriteRecords", function () {
 
     it("Favorites List Does Not Contains 'Rumors'", async function () {
       expect(await contract.getUserFavorites(addy)).to.not.contain("Rumors");
+    });
+
+    it("Allows reset of User Favorites", async function () {
+      expect(await contract.resetUserFavorites()).to.be.ok;
+    });
+
+    it("Has Favorites List length of 0", async function () {
+      expect((await contract.getUserFavorites(addy)).length).be.equal(0);
     });
   });
 });
